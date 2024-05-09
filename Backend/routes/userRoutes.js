@@ -2,9 +2,9 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
+const TokenModel =  require('../models/tokenModel')
 const UserRouter = express.Router();
 
-// Add middleware to parse JSON bodies
 UserRouter.use(express.json());
 
 UserRouter.post("/register", async (req, res) => {
@@ -17,7 +17,6 @@ UserRouter.post("/register", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Set default role to 'user' if not provided
     const newUser = new UserModel({
       email,
       password
@@ -57,14 +56,51 @@ UserRouter.post("/login", async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
+      expiresIn: '2h',
     });
 
-    res.status(200).json({ token });
+    // Check if token exists in the database
+    const existingToken = await TokenModel.findOne({ userId: user._id });
+    if (existingToken) {
+      existingToken.token = token;
+      await existingToken.save();
+    } else {
+      await TokenModel.create({ token, userId: user._id });
+    }
+
+    res.status(200).json({ "msg": "Login successful",token, "user":user });
   } catch (error) {
     console.error("Error logging in:", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
+UserRouter.post("/logout", async (req, res) => {
+  try {
+    const token = req.body.token || req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    await deleteTokenFromDatabase(token);
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error logging out:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+async function deleteTokenFromDatabase(token) {
+  
+  await TokenModel.deleteOne({ token });
+}
+
 module.exports = UserRouter;
+
+
+
+
+
+
