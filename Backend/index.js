@@ -1,17 +1,27 @@
 const express =  require('express');
 const connection  = require('./config/db');
+const UserRouter =  require('./routes/userRoutes');
+const bodyParser = require('body-parser');
+const authentication =  require('./middlewares/authentication');
 const cors =  require('cors')
 require('dotenv').config();
 
-const app  = express();
-app.use(express.json())
-app.use(cors())
+const app =  express();
 
 
-// Basic Home route
-app.get('/',(req,res)=>{
-    res.status(201).json({"message":"Welcome to Homepage"})
+// Middleware
+app.use(cors()); 
+
+// Routes
+app.get("/", (req, res) => {
+  res.send('Wel-come to the HomePage');
+});
+
+app.use('/user', UserRouter);
+app.use('/products', authentication,(req,res)=> {
+    res.send('Protected routers')
 })
+
 app.listen(process.env.PORT, async()=> {
 
     try{
