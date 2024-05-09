@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="./style/dashboard.css" />
+    <style></style>
+  </head>
+  <body>
+    <nav>
+      <div>
+        <img src="logo.png" alt="" />
+        <button id="logoutbutton">logout</button>
+        <div id="logout_confimdiv">
+          <p>Are you sure want to logout!</p>
+          <br />
+          <button id="cancel">Cancel</button>
+          <button id="confirm_logout">confirm</button>
+        </div>
+      </div>
+    </nav>
+    <div id="maincontainer">
+      <div id="leftbar">
+        <ul>
+          <li><button>Home</button></li>
+          <li><button id="showcategory">Category</button></li>
+          <li><button>Products</button></li>
+        </ul>
+      </div>
+      <div id="adminwelcome">
+        <img src="./logo.png" alt="" />
+        <h1>welcome to Digital flake admin page</h1>
+      </div>
+
+      <div id="append_Category">
+        <form id="search_by_cate_name">
+          <input type="text" placeholder="search here with category name" />
+          <input type="submit">
+        </form>
+
+        <button id="add_newcategory">ADD NEW</button>
+
+        <form id="add_category_form" style="display: none;">
+            <input type="text" id="category_name" placeholder="Category Name" required /> <br>
+            <textarea id="category_description" placeholder="Category Description" required></textarea> <br>
+            <select id="category_status" required>
+                <option value="">Select Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select> <br>
+            <input type="submit" value="Add Category">
+        </form>
+        
+
+        <div id="append_category_here">
+          <table id="category_table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>update</th>
+                <th>delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Category data will be dynamically appended here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script src="./script/dashboard.js"></script>
+<script>
+  const showcategory = document.getElementById("showcategory");
+  const adminwelcome = document.getElementById("adminwelcome");
+  const appendCategory = document.getElementById("append_Category");
+  appendCategory.style.display = "none";
+
+  const fetchcategory = async function () {
+
+    console.log("button clicked....");
+    adminwelcome.style.display = "none";
+    appendCategory.style.display = "block";
+
+    const categoryTable = document.getElementById("category_table");
+    const tbody = categoryTable.getElementsByTagName("tbody")[0];
+
+    const token = localStorage.getItem("digitoken");
+    console.log(token);
+
+    try {
+      const response = await fetch("http://localhost:8080/category/getall", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+
+      if (!response.ok) {
+        console.log("Failed to fetch categories");
+        console.log(response);
+      }
+
+      const data = await response.json();
+      const categories = data.category;
+      console.log("data", categories);
+
+      tbody.innerHTML = ""; 
+
+      categories.forEach((category) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                  <td>${category.id}</td>
+                  <td>${category.name}</td>
+                  <td>${category.description}</td>
+                  <td>${category.status}</td>
+                  <td><button class="update-button">Update</button></td>
+                  <td><button class="delete-button">Delete</button></td>
+              `;
+        tbody.appendChild(row);
+
+        const updateButton = row.querySelector(".update-button");
+        const deleteButton = row.querySelector(".delete-button");
+
+        updateButton.addEventListener("click", function () {
+        
+          console.log("Update button clicked for category:", category.id);
+        });
+
+        deleteButton.addEventListener("click", async function () {
+          const id = category._id; 
+          console.log(id)
+          try {
+            const response = await fetch(`http://localhost:8080/category/delete/${id}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: token,
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error("Failed to delete category");
+            }
+
+            const data = await response.json();
+            console.log(data.message);
+            
+            fetchcategory()
+          
+         } catch (error) {
+            console.error("Error:", error.message);
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
+  showcategory.addEventListener("click",fetchcategory)
+   
+  const add_newcategory =  document.getElementById('add_newcategory')
+  console.log("button clicked for add new")
+  add_newcategory.addEventListener('click',function(){
+
+     const add_category_form =  document.getElementById('add_category_form');
+     add_category_form.style.display = 'block'
+
+  })
+
+
+   
+
+
+
+  const newadd_categoryform = document.getElementById('add_category_form');
+  newadd_categoryform.addEventListener('submit',function(e){
+    e.preventDefault();
+    const category_id =  document.getElementById('category_id').value;
+    const category_name =  document.getElementById('category_name').value;
+    const category_description =  document.getElementById('category_description').value;
+    const category_status =  document.getElementById('category_status').value;
+
+    const newcategory = {category_id,category_name,category_description,category_status}
+
+    if(category_id === "" ||
+    category_name === ""||
+    category_description === "" || 
+    category_status === ""
+
+    ){
+        alert("Please fill the all things about category")
+    }else {
+        payload = {
+            category_id,
+            category_name,category_description,category_status
+        }
+        console.log("payload from the form...")
+    }
+
+
+  })
+
+  
+</script>
