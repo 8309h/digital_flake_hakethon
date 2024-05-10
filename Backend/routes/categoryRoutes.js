@@ -31,7 +31,7 @@ CategoryRouter.post("/addnew", async (req, res) => {
       });
   
       await newCategory.save();
-      res.status(201).json({ category: newCategory });
+      res.status(201).json({ message:"New Category Added succesfully", category: newCategory });
     } catch (err) {
       console.error("Error while creating category:", err.message);
       res.status(500).json({ message: "Internal server error" });
