@@ -14,7 +14,10 @@ form {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 400px;
+    display: block;
+    height: 80vh;
+    /* align-self: start; */
 }
 
 form div {
@@ -34,10 +37,9 @@ label {
 input[type="email"],
 input[type="password"] {
     width: calc(100% - 12px);
-    padding: 8px;
+    padding: 10px;
     margin-bottom: 10px;
     border: 1px solid mediumorchid;
-    border-radius: 4px;
 }
 
 button[type="submit"] {
@@ -46,7 +48,6 @@ button[type="submit"] {
     background-color: darkorchid;
     color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }

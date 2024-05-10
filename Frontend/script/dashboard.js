@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
         confirmdiv.style.display = 'block'
         confirmdiv.style.position= "fixed"
         confirmdiv.style.top = "100px";
-        confirmdiv.style.left = "90%";
+        confirmdiv.style.left = "77%";
         confirmdiv.style.height = "200px"
         confirmdiv.style.backgroundColor ='whitesmoke'
         confirmdiv.style.color ='black'

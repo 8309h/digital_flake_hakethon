@@ -29,8 +29,8 @@ form.addEventListener('submit', myfun);
 function myfun(event) {
     event.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("register_email").value;
+    const password = document.getElementById("register_password").value;
 
     if (email === "" || password === "") {
         alert("All fields are required");
@@ -122,16 +122,32 @@ loginForm.addEventListener("submit", handleLoginForm);
 
 
 function togglePasswordVisibility() {
-    const passwordField = document.getElementById("password");
+    const passwordInput = document.getElementById("loginPassword");
     const eyeIcon = document.getElementById("eye");
 
-    if (passwordField.type === "password") {
-        passwordField.type = "text";
-        eyeIcon.textContent = "👁️";
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeIcon.textContent = "👁️"; 
     } else {
-        passwordField.type = "password";
-        eyeIcon.textContent = "🔒";
+        passwordInput.type = "password";
+        eyeIcon.textContent = "👁️"; 
     }
+}
+
+
+function togglePasswordVisibilityforregister(){
+
+    const register_password =  document.getElementById('register_password')
+    const eyeIcon = document.getElementById("eye");
+
+    if (register_password.type === "password") {
+        register_password.type = "text";
+        eyeIcon.textContent = "👁️"; 
+    } else {
+        register_password.type = "password";
+        eyeIcon.textContent = "👁️"; 
+    }
+
 }
 
 

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <link rel="stylesheet" href="./style/dashboard.css" />
-    <style></style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+
   </head>
   <body>
     <nav>
@@ -13,17 +14,20 @@
         <img src="logo.png" alt="" />
         <button id="logoutbutton">logout</button>
         <div id="logout_confimdiv">
-          <p>Are you sure want to logout!</p>
+          <p style="margin-bottom: 50px">Are you sure want to logout!!</p>
           <br />
-          <button id="cancel">Cancel</button>
-          <button id="confirm_logout">confirm</button>
+
+          <div id="logout_confimdiv_button">
+            <button id="cancel">Cancel</button>
+            <button id="confirm_logout">confirm</button>
+          </div>
         </div>
       </div>
     </nav>
     <div id="maincontainer">
       <div id="leftbar">
         <ul>
-          <li><button>Home</button></li>
+          <li><button id="showhome">Home</button></li>
           <li><button id="showcategory">Category</button></li>
           <li><button>Products</button></li>
         </ul>
@@ -35,23 +39,67 @@
 
       <div id="append_Category">
         <form id="search_by_cate_name">
-          <input type="text" placeholder="search here with category name" />
-          <input type="submit">
+          <input type="text" placeholder="search here with category name" id="search_by_name" />
+          <input type="submit"  value="search"/>
         </form>
 
         <button id="add_newcategory">ADD NEW</button>
 
         <form id="add_category_form" style="display: none;">
-            <input type="text" id="category_name" placeholder="Category Name" required /> <br>
-            <textarea id="category_description" placeholder="Category Description" required></textarea> <br>
-            <select id="category_status" required>
-                <option value="">Select Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-            </select> <br>
-            <input type="submit" value="Add Category">
-        </form>
+          <input
+            type="text"
+            id="category_id"
+            placeholder="Category id"
+            required
+          /> 
+          <input
+            type="text"
+            id="category_name"
+            placeholder="Category Name"
+            required
+          />
+          
+          <textarea
+            id="category_description"
+            placeholder="Category Description"
+            required
+          ></textarea>
+          
+          <select id="category_status" required>
+            <option value="">Select Status</option>
+            <option value="1">active</option>
+            <option value="0">inactive</option>
+          </select>
+           <button id="cancel_add_new">Cancel</button>
         
+          <input type="submit" value="Add Category" />
+        </form>
+
+        <form id="update_category_form" style="display: none;">
+          <input
+              type="text"
+              id="update_category_id"
+              placeholder="Category id to update"
+              required
+          />
+          <input
+              type="text"
+              id="update_category_name"
+              placeholder="New Category Name"
+              required
+          />
+          <textarea
+              id="update_category_description"
+              placeholder="New Category Description"
+              required
+          ></textarea>
+          <select id="category_status2">
+              <option value="1">active</option>
+              <option value="0">inactive</option>
+          </select>
+          <input type="submit" value="Update Category" />
+      </form>
+      
 
         <div id="append_category_here">
           <table id="category_table">
@@ -61,8 +109,8 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Status</th>
-                <th>update</th>
-                <th>delete</th>
+                <th><i class="fa fa-pen"></th>
+                <th><i class="fa fa-trash"></th>
               </tr>
             </thead>
             <tbody>
@@ -82,8 +130,10 @@
   const appendCategory = document.getElementById("append_Category");
   appendCategory.style.display = "none";
 
-  const fetchcategory = async function () {
+  const token = localStorage.getItem("digitoken");
+ console.log(token);
 
+  const fetchcategory = async function () {
     console.log("button clicked....");
     adminwelcome.style.display = "none";
     appendCategory.style.display = "block";
@@ -91,8 +141,7 @@
     const categoryTable = document.getElementById("category_table");
     const tbody = categoryTable.getElementsByTagName("tbody")[0];
 
-    const token = localStorage.getItem("digitoken");
-    console.log(token);
+   
 
     try {
       const response = await fetch("http://localhost:8080/category/getall", {
@@ -112,17 +161,20 @@
       const categories = data.category;
       console.log("data", categories);
 
-      tbody.innerHTML = ""; 
+      tbody.innerHTML = "";
 
       categories.forEach((category) => {
+        const statusText = category.status ? "active" : "inactive";
         const row = document.createElement("tr");
         row.innerHTML = `
                   <td>${category.id}</td>
                   <td>${category.name}</td>
                   <td>${category.description}</td>
-                  <td>${category.status}</td>
-                  <td><button class="update-button">Update</button></td>
-                  <td><button class="delete-button">Delete</button></td>
+                  <td>${statusText}</td>
+
+                  <td><button class="update-button"><i class="fa fa-pen"></i></button></td>
+                  <td><button class="delete-button"><i class="fa fa-trash"></i></button></td>
+ 
               `;
         tbody.appendChild(row);
 
@@ -130,21 +182,70 @@
         const deleteButton = row.querySelector(".delete-button");
 
         updateButton.addEventListener("click", function () {
-        
-          console.log("Update button clicked for category:", category.id);
+
+          const cate_id = category._id
+
+          console.log("Update button clicked for category:", cate_id);
+
+          const update_category_form =  document.getElementById('update_category_form')
+          update_category_form.style.display = 'block'
+
+          document.getElementById("update_category_form").addEventListener("submit", async function(event) {
+          event.preventDefault();
+
+        const id = document.getElementById("update_category_id").value;
+        const name = document.getElementById("update_category_name").value;
+        const description = document.getElementById("update_category_description").value;
+        const status = document.getElementById("category_status2").value;
+
+        console.log("status",status)
+
+    const formData = {id,name, description,status};
+
+    console.log("fromdata",formData)
+
+    try {
+      const response = await fetch(`/update/${cate_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:token
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        const updatedCategory = await response.json();
+        console.log("Category updated:", updatedCategory);
+        update_category_form.display.style = 'none'
+        fetchcategory()
+      } else {
+        console.error("Failed to update category");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+          
+
+          
         });
 
         deleteButton.addEventListener("click", async function () {
-          const id = category._id; 
-          console.log(id)
+          const id = category._id;
+          console.log(id);
           try {
-            const response = await fetch(`http://localhost:8080/category/delete/${id}`, {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-              },
-            });
+            const response = await fetch(
+              `http://localhost:8080/category/delete/${id}`,
+              {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: token,
+                },
+              }
+            );
 
             if (!response.ok) {
               throw new Error("Failed to delete category");
@@ -152,10 +253,9 @@
 
             const data = await response.json();
             console.log(data.message);
-            
-            fetchcategory()
-          
-         } catch (error) {
+
+            fetchcategory();
+          } catch (error) {
             console.error("Error:", error.message);
           }
         });
@@ -165,49 +265,191 @@
     }
   };
 
-  showcategory.addEventListener("click",fetchcategory)
-   
-  const add_newcategory =  document.getElementById('add_newcategory')
-  console.log("button clicked for add new")
-  add_newcategory.addEventListener('click',function(){
+  showcategory.addEventListener("click", fetchcategory);
 
-     const add_category_form =  document.getElementById('add_category_form');
-     add_category_form.style.display = 'block'
+  const add_newcategory = document.getElementById("add_newcategory");
+  console.log("button clicked for add new");
+  add_newcategory.addEventListener("click", function () {
+    const add_category_form = document.getElementById("add_category_form");
+    add_category_form.style.display = "block";
+  });
 
-  })
-
-
-   
-
-
-
-  const newadd_categoryform = document.getElementById('add_category_form');
-  newadd_categoryform.addEventListener('submit',function(e){
+  const newadd_categoryform = document.getElementById("add_category_form");
+  newadd_categoryform.addEventListener("submit", function (e) {
     e.preventDefault();
-    const category_id =  document.getElementById('category_id').value;
-    const category_name =  document.getElementById('category_name').value;
-    const category_description =  document.getElementById('category_description').value;
-    const category_status =  document.getElementById('category_status').value;
 
-    const newcategory = {category_id,category_name,category_description,category_status}
+    const id = document.getElementById("category_id").value;
+    const name = document.getElementById("category_name").value;
+    const description = document.getElementById(
+      "category_description"
+    ).value;
+    const status = document.getElementById("category_status").value;
 
-    if(category_id === "" ||
-    category_name === ""||
-    category_description === "" || 
-    category_status === ""
+    if (
+      id === "" ||
+      name === "" ||
+      description === "" ||
+      status === ""
+    ) {
+      alert("Please fill the all things about category");
+    } else {
+      payload = {
+        id,
+        name,
+        description,
+        status,
+      };
 
-    ){
-        alert("Please fill the all things about category")
-    }else {
-        payload = {
-            category_id,
-            category_name,category_description,category_status
-        }
-        console.log("payload from the form...")
+       console.log("payload",payload)
+    
+        fetch("http://localhost:8080/category/addnew", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+                Authorization : token
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("data", data.message);
+
+            if (data.message === "Category already exists") {
+                alert(data.message);
+            } else if (data.message === "New Category Added succesfully") {
+                alert("Category Added Succesfully !");
+                 fetchcategory();
+                
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+  });
+
+
+
+  const cancel_add_new = document.getElementById('cancel_add_new').addEventListener('click',function(){
+    console.log("buttom  clilc by harhsal")
+    newadd_categoryform.style.display = 'none'
+    
+  })
+  const showhome = document
+    .getElementById("showhome")
+    .addEventListener("click", function() {
+      adminwelcome.style.display = "block";
+      appendCategory.style.display = "none";
+
+    });
+
+
+    const searchForm = document.getElementById("search_by_cate_name");
+
+searchForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const token = localStorage.getItem("digitoken");
+  console.log("token", token);
+
+  const categoryName = document.getElementById("search_by_name").value;
+  console.log("search value", categoryName);
+
+  try {
+    const response = await fetch(`http://localhost:8080/category/search?name=${encodeURIComponent(categoryName)}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token // Include the token directly in the Authorization header
+      }
+    });
+
+    console.log(response);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch categories");
     }
 
+    const categories = await response.json();
+    console.log(categories);
+   
+   displayCategories(categories);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-  })
-
+// Function to display categories in the DOM as a table
+function displayCategories(categories) {
   
+
+  const categoryTable = document.getElementById("category_table");
+    const tbody = categoryTable.getElementsByTagName("tbody")[0];
+    tbody.innerHTML= ""
+
+  categories.forEach(category => {
+    const row = document.createElement("tr");
+
+    const idCell = document.createElement("td");
+    idCell.textContent = category.id;
+
+    const nameCell = document.createElement("td");
+    nameCell.textContent = category.name;
+
+    const descriptionCell = document.createElement("td");
+    descriptionCell.textContent = category.description;
+
+    const statusCell = document.createElement("td");
+    statusCell.textContent = category.status === "1" ? "Active" : "Inactive";
+
+    const updateCell = document.createElement("td");
+    const updateButton = document.createElement("button");
+    updateButton.classList.add("update-button");
+    const updateIcon = document.createElement("i");
+    updateIcon.classList.add("fas", "fa-edit"); 
+    updateButton.appendChild(updateIcon);
+    updateCell.appendChild(updateButton);
+
+    const deleteCell = document.createElement("td");
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete-button");
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("fas", "fa-trash-alt"); 
+
+    deleteButton.appendChild(deleteIcon);
+    deleteCell.appendChild(deleteButton);
+
+    row.appendChild(idCell);
+    row.appendChild(nameCell);
+    row.appendChild(descriptionCell);
+    row.appendChild(statusCell);
+    row.appendChild(updateButton);
+    row.appendChild(deleteButton)
+
+    tbody.appendChild(row);
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    
+
+    
+
+
+    
+
+
 </script>
