@@ -23,10 +23,10 @@ document.addEventListener("DOMContentLoaded", function() {
     
 
 
-let form = document.getElementById('registerForm');
-form.addEventListener('submit', myfun);
+const registerForm = document.getElementById('registerForm');
+registerForm.addEventListener('submit', registerUser);
 
-function myfun(event) {
+async function registerUser(event) {
     event.preventDefault();
 
     const email = document.getElementById("register_email").value;
@@ -34,36 +34,38 @@ function myfun(event) {
 
     if (email === "" || password === "") {
         alert("All fields are required");
-    } else {
-        let payload = {email, password,};
-        let deployed = "http://localhost:8080/user/register";
+        return;
+    }
 
-        fetch(deployed, {
+    const payload = { email, password };
+
+    try {
+        const response = await fetch("http://localhost:8080/user/register", {
             method: "POST",
             headers: {
-                "Content-type": "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log("data", data.msg);
-
-            if (data.msg === "User already exists. Please login") {
-                alert(data.msg);
-                location.href = "index.html";
-            } else if (data.msg === "New user registered successfully") {
-                alert("SignUp Success");
-                location.href = "login.html";
-                
-                loginForm.style.display = "block";
-            }
-        })
-        .catch(err => {
-            console.log(err);
         });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);
+            location.href = "index.html"; 
+            loginForm.style.display = "none";
+            registerForm.style.display = "block";
+
+        
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error("Error:", error.message);
+        alert("Internal server error. Please try again later.");
     }
 }
+
+
 
 
 // Function for login form

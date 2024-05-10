@@ -24,21 +24,18 @@ const productCategoryMapping = {
 // Create Product Route
 ProductRouter.post('/create', async (req, res) => {
   try {
-    const { name, ...productData } = req.body;
+    const {name, ...productData } = req.body;
 
-    // Check if name is provided and exists in the product category mapping
     if (!name || !productCategoryMapping[name]) {
       return res.status(400).json({ message: 'Invalid product name or category not found' });
     }
 
-    // Find or create the category by name
     const categoryName = productCategoryMapping[name];
     let category = await CategoryModel.findOne({ name: categoryName });
     if (!category) {
       category = await CategoryModel.create({ name: categoryName });
     }
 
-    // Create the product with the extracted category ID
     const product = await ProductModel.create({ name, ...productData, category: category._id });
 
     res.status(201).json({ message: 'Product created successfully', data: product });

@@ -186,6 +186,12 @@
     background-color: white;
 
   }
+  #logoutbutton {
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-weight: bold;
+  }
   
   @media screen and (max-width: 600px) {
    
@@ -299,6 +305,39 @@
     }
   }
   
+
+
+  /* product comtainer css */
+  table img {
+    width: 5%;
+  }
   
+  /* Default table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Style for avatar images */
+.avatar {
+  width: 50px;
+  height: auto;
+  border-radius: 50%;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  th, td {
+    font-size: 14px;
+  }
+}
+
+
   
   

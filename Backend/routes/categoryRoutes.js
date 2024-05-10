@@ -14,29 +14,38 @@ CategoryRouter.get("/getall", async (req, res) => {
 });
 
 CategoryRouter.post("/addnew", async (req, res) => {
-    try {
-      const { id, name, description, status } = req.body;
-  
-      const categoryExists = await CategoryModel.findOne({ name: name });
-  
-      if (categoryExists) {
-        return res.status(400).json({ message: "Category already exists" });
-      }
-  
-      const newCategory = new CategoryModel({
-        id,
-        name,
-        description,
-        status,
-      });
-  
-      await newCategory.save();
-      res.status(201).json({ message:"New Category Added succesfully", category: newCategory });
-    } catch (err) {
-      console.error("Error while creating category:", err.message);
-      res.status(500).json({ message: "Internal server error" });
+  try {
+    const { id,name, description, status } = req.body;
+
+    const allowedCategories = ['milk', 'vegetable', 'fruit'];
+
+    if (!allowedCategories.includes(name.toLowerCase())) {
+      return res.status(400).json({ message: "Category not allowed. Allowed categories are: milk, vegetable, fruit" });
     }
-  });
+
+    const categoryExists = await CategoryModel.findOne({ id:id });
+
+    if (categoryExists) {
+      return res.status(400).json({ message: "Category already exists" });
+    }
+
+    // Create a new category
+    const newCategory = new CategoryModel({
+      id,
+      name,
+      description,
+      status,
+    });
+
+    // Save the new category to the database
+    await newCategory.save();
+
+    res.status(201).json({ message:"New Category Added successfully", category: newCategory });
+  } catch (err) {
+    console.error("Error while creating category:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
   CategoryRouter.delete('/delete/:id', async (req, res) => {

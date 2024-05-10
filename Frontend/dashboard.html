@@ -12,7 +12,8 @@
     <nav>
       <div>
         <img src="logo.png" alt="" />
-        <button id="logoutbutton">logout</button>
+        <button id="logoutbutton"><i class="fa fa-user"></i>
+        </button>
         <div id="logout_confimdiv">
           <p style="margin-bottom: 50px">Are you sure want to logout!!</p>
           <br />
@@ -29,7 +30,7 @@
         <ul>
           <li><button id="showhome">Home</button></li>
           <li><button id="showcategory">Category</button></li>
-          <li><button>Products</button></li>
+          <li><button id="showproduct">Products</button></li>
         </ul>
       </div>
       <div id="adminwelcome">
@@ -119,6 +120,30 @@
           </table>
         </div>
       </div>
+
+
+      <div id="show_product_container" style="display: none;">
+
+
+        
+       
+        <table id="product_table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Package Size</th>
+                    <th>MRP</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="product_table_body"></tbody>
+        </table>
+    </div>
+    
+
+     
     </div>
   </body>
 </html>
@@ -316,7 +341,7 @@
 
             if (data.message === "Category already exists") {
                 alert(data.message);
-            } else if (data.message === "New Category Added succesfully") {
+            } else if (data.message === "New Category Added successfully") {
                 alert("Category Added Succesfully !");
                  fetchcategory();
                 
@@ -360,9 +385,10 @@ searchForm.addEventListener("submit", async function(event) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token // Include the token directly in the Authorization header
+        "Authorization": token 
       }
     });
+
 
     console.log(response);
 
