@@ -219,6 +219,7 @@
 #update_category_form {
   display: none;
   margin-top: 20px;
+  width: 300px;
 }
 
 #update_category_form input[type="text"],

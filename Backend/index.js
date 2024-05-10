@@ -1,6 +1,7 @@
 const express = require("express");
 const connection = require("./config/db");
 const UserRouter = require("./routes/userRoutes");
+const ProductRouter = require("./routes/productRoutes")
 const bodyParser = require("body-parser");
 const authentication = require("./middlewares/authentication");
 const CategoryRouter = require("./routes/categoryRoutes");
@@ -20,9 +21,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", UserRouter);
 app.use("/category", authentication, CategoryRouter);
-app.use("/products", authentication, (req, res) => {
-  res.send("Protected routers");
-});
+app.use("/product", authentication,ProductRouter);
 
 app.listen(process.env.PORT, async () => {
   try {
