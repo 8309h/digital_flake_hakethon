@@ -45,6 +45,27 @@ To use Digital Flake:
 - **PATCH /product/update/:id**: Update a product by ID.
 - **DELETE /product/delete/:id**: Delete a product by ID.
 
+
+### Frontend Tech Stack
+
+- **Languages**: HTML, CSS, JavaScript (Vanilla)
+- **Styling**: CSS with Sass/SCSS (optional)
+- **HTTP Requests**: Fetch API or XMLHttpRequest
+- **Routing**: Vanilla JavaScript for simple routing (or any lightweight routing library)
+- **Authentication**: LocalStorage or sessionStorage for storing tokens
+- **Icons**: Font Awesome or custom icon sets
+- **Version Control**: Git with GitHub or GitLab
+
+### Backend Tech Stack
+
+- **Framework**: Express.js for handling HTTP requests and routing
+- **Database**: MongoDB for storing data, with Mongoose for object modeling
+- **Authentication**: JWT (JSON Web Tokens) for user authentication
+- **Security**: bcrypt for password hashing
+- **Middleware**: Helmet for securing HTTP headers, Cors for handling Cross-Origin Resource Sharing
+- **Version Control**: Git with GitHub or GitLab
+
+
 ## Screenshots
 
 Include screenshots of your application in action:
