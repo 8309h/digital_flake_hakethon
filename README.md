@@ -19,8 +19,7 @@ To use Digital Flake:
 1. Register a new user using the `/user/register` endpoint.
 2. Log in using the `/user/login` endpoint to receive a JWT token.
 3. Use the token to authenticate requests to protected routes.
-4. Browse categories and products, add them to your cart, and proceed to checkout.
-5. Administrators can manage categories and products using the appropriate routes.
+4. Administrators can manage categories and products using the appropriate routes.
 
 ### Routes
 
@@ -49,14 +48,21 @@ To use Digital Flake:
 ## Screenshots
 
 Include screenshots of your application in action:
-
+# Register
 - ![register page](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-index-html-2024-05-11-04_38_11.png)
+# Login 
 - ![Login page](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-index-html-2024-05-11-04_37_56.png)
+# Category
 - ![category page](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-dashboard-html-2024-05-11-04_37_34.png)
+# Search Category
 - ![search category](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-dashboard-html-2024-05-11-04_36_29.png)
+# Add new Category 
 - ![add new category](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-dashboard-html-2024-05-11-04_36_03.png)
+# Update Category
 - ![update category ](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-dashboard-html-2024-05-11-04_37_03.png)
+# Logout 
 - ![logout section](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-dashboard-html-2024-05-11-04_37_34.png)
+# Get Product Section
 - ![product getting](./Frontend/screenshot/screencapture-127-0-0-1-5500-Frontend-dashboard-html-2024-05-11-04_35_18.png)
 
 
